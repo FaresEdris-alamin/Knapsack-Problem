@@ -34,8 +34,9 @@ class GeneticKnapsackSolver:
         #choose 20% of the population as parents
         sorted_population = [x for _, x in sorted(zip(fitness_values, self.population), reverse=True)]
         parents = sorted_population[:int(0.2 * len(self.population))]
+        second_half = sorted_population[int(0.2 * len(self.population)):]
 
-        return parents
+        return parents,second_half
 
     def crossover(self, parents):
         crossover_point = random.randint(0, len(self.items) - 1)
@@ -62,7 +63,7 @@ class GeneticKnapsackSolver:
 
     def evolve_population(self):
         for _ in range(self.generations):
-            parents = self.select_chromosomes()
+            parents,second_half = self.select_chromosomes()
             children = self.crossover(parents)
 
            # second_half = parents[]
