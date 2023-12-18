@@ -62,15 +62,10 @@ class GeneticKnapsackSolver:
 
     def evolve_population(self):
         for _ in range(self.generations):
-            parent1, parent2 = self.select_chromosomes()
-            child1, child2 = self.crossover(parent1, parent2)
+            parents = self.select_chromosomes()
+            children = self.crossover(parents)
 
-            if random.uniform(0, 1) < self.mutation_probability:
-                child1 = self.mutate(child1)
-            if random.uniform(0, 1) < self.mutation_probability:
-                child2 = self.mutate(child2)
-
-            self.population = [child1, child2] + self.population[2:] # Replace the least fit chromosomes
+           # second_half = parents[]
 
     def get_best_solution(self):
         best_chromosome = max(self.population, key=self.calculate_fitness)
