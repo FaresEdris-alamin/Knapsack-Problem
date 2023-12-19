@@ -8,14 +8,6 @@
         "type": "tabs",
         "children": [
           {
-            "id": "0bb7c43ca90960bc",
-            "type": "leaf",
-            "state": {
-              "type": "empty",
-              "state": {}
-            }
-          },
-          {
             "id": "be081f1f539b4720",
             "type": "leaf",
             "state": {
@@ -27,8 +19,7 @@
               }
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -158,6 +149,7 @@
   },
   "active": "be081f1f539b4720",
   "lastOpenFiles": [
+    "GAKnapsackFC.jpg",
     "AI Project Report.md"
   ]
 }
