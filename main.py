@@ -16,10 +16,18 @@ class GeneticKnapsackSolver:
 
     def generate_population(self):     # Unbounded should choose any chromosome any number of times 
         population = []                # Currently it chooses it only twice and no more than that in all attempts
-        for _ in range(self.population_size):
+        count = 0        #used in the while to count the number of chromosome in the population
+        #for _ in range(self.population_size):
+        while count < self.population_size:   
+            #creating the chromosome 
             genes = [0, 1] if not self.unbounded else [0, 1, 2]  # Add 2 for unbounded knapsack
             chromosome = [random.choice(genes) for _ in range(len(self.items))]
-            population.append(chromosome)
+            
+            #check if it's weight is above the max weight if it isn't it adds the chromosome to the population 
+            total_weight = sum(item[0] * chromosome[i] for i, item in enumerate(self.items))
+            if total_weight <= self.max_weight:
+                population.append(chromosome)
+                count+=1
         return population
 
     def calculate_fitness(self, chromosome):
@@ -66,6 +74,7 @@ class GeneticKnapsackSolver:
             parents,second_half = self.select_chromosomes()
             children = self.crossover(parents)
 
+
            # second_half = parents[]
 
     def get_best_solution(self):
@@ -73,6 +82,20 @@ class GeneticKnapsackSolver:
         total_weight = sum(item[0] * best_chromosome[i] for i, item in enumerate(self.items))
         total_value = sum(item[1] * best_chromosome[i] for i, item in enumerate(self.items))
         return best_chromosome, total_weight, total_value
+
+    def mutation(self,chromo, p):
+    # mutated chromo intial values are zeros
+        mutated_chromosome = [0 for _ in range(len(self.items))]
+        for i in range(len(self.items)):
+            d = chromo[i]
+            r = random.uniform(0, 1)
+            if chromo[i] == 1.0 and r < p:
+                mutated_chromosome[i] = 0
+            elif chromo[i] == 0.0 and r < p:
+                mutated_chromosome[i] = 1
+            else:
+                mutated_chromosome[i] = d
+        return mutated_chromosome
 
 class KnapsackSolverGUI:
     def __init__(self, root):
