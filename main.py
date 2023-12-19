@@ -20,7 +20,8 @@ class GeneticKnapsackSolver:
         #for _ in range(self.population_size):
         while count < self.population_size:   
             #creating the chromosome 
-            genes = [0, 1] if not self.unbounded else [0, 1, 2]  # Add 2 for unbounded knapsack
+            genes = [0, 1] if not self.unbounded else [i for i in range(10)]
+            #genes = [0, 1] if not self.unbounded else [0, 1, 2, 3, 4, 5]  
             chromosome = [random.choice(genes) for _ in range(len(self.items))]
             
             #check if it's weight is above the max weight if it isn't it adds the chromosome to the population 
@@ -71,27 +72,29 @@ class GeneticKnapsackSolver:
 
     def mutate(self, chromosome):
         mutate_point = random.randint(0, len(self.items) - 1)
-        chromosome[mutate_point] = random.choice([0, 1]) if self.unbounded else 1
+        chromosome[mutate_point] = random.choice([0, 1, 2, 3, 4, 5])
         chromosome = self.correct_weight(chromosome)
         return chromosome
 
+    
+
     def evolve_population(self):
-        for _ in range(self.generations):
-            parents, second_half = self.select_chromosomes()
-            children = self.crossover(parents)
+            for _ in range(self.generations):
+                parents, second_half = self.select_chromosomes()
+                children = self.crossover(parents)
 
-def evolve_population(self):
-        for _ in range(self.generations):
-            parents, second_half = self.select_chromosomes()
-            children = self.crossover(parents)
+                # Replace the worst-performing individuals with the children
+                self.population = second_half + children
 
-            # Replace the worst-performing individuals with the children
-            self.population = second_half + children
+                # Mutate some individuals based on the mutation probability
+                
+                for i in range(len(self.population)):
+                    if self.unbounded:
+                        if random.random() < self.mutation_probability:
+                            self.population[i] = self.mutate(self.population[i]) # Mutates unbounded
+                    else:
+                        self.population[i] = self.mutation(self.population[i], self.mutation_probability) # Mutates 0-1
 
-            # Mutate some individuals based on the mutation probability
-            for i in range(len(self.population)):
-                if random.random() < self.mutation_probability:
-                    self.population[i] = self.mutate(self.population[i])
 
     def get_best_solution(self):
         best_chromosome = max(self.population, key=self.calculate_fitness)
@@ -121,7 +124,8 @@ def evolve_population(self):
                 mutated_chromosome[i] = 1
             else:
                 mutated_chromosome[i] = d
-        return mutated_chromosome
+        chromo = mutated_chromosome
+        return chromo
 
 class KnapsackSolverGUI:
     def __init__(self, root):
