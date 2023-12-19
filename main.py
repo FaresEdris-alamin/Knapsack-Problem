@@ -59,6 +59,11 @@ class GeneticKnapsackSolver:
             parent1, parent2 = parents[i], parents[i + 1] if i + 1 < len(parents) else parents[i]
             child1 = parent1[:crossover_point] + parent2[crossover_point:]
             child2 = parent2[:crossover_point] + parent1[crossover_point:]
+
+            #Check andd correct the child's weight if it exceeds the maximum weight
+            child1 = self.correct_weight(child1)
+            child2 = self.correct_weight(child2)
+
             children.extend([child1, child2])
 
         return children
@@ -66,22 +71,43 @@ class GeneticKnapsackSolver:
 
     def mutate(self, chromosome):
         mutate_point = random.randint(0, len(self.items) - 1)
-        chromosome[mutate_point] = random.choice([0, 1, 2]) if self.unbounded else 1
+        chromosome[mutate_point] = random.choice([0, 1]) if self.unbounded else 1
+        chromosome = self.correct_weight(chromosome)
         return chromosome
 
     def evolve_population(self):
         for _ in range(self.generations):
-            parents,second_half = self.select_chromosomes()
+            parents, second_half = self.select_chromosomes()
             children = self.crossover(parents)
 
+def evolve_population(self):
+        for _ in range(self.generations):
+            parents, second_half = self.select_chromosomes()
+            children = self.crossover(parents)
 
-           # second_half = parents[]
+            # Replace the worst-performing individuals with the children
+            self.population = second_half + children
+
+            # Mutate some individuals based on the mutation probability
+            for i in range(len(self.population)):
+                if random.random() < self.mutation_probability:
+                    self.population[i] = self.mutate(self.population[i])
 
     def get_best_solution(self):
         best_chromosome = max(self.population, key=self.calculate_fitness)
         total_weight = sum(item[0] * best_chromosome[i] for i, item in enumerate(self.items))
         total_value = sum(item[1] * best_chromosome[i] for i, item in enumerate(self.items))
         return best_chromosome, total_weight, total_value
+    
+
+    def correct_weight(self, chromosome):
+        total_weight = sum(item[0] * chromosome[i] for i, item in enumerate(self.items))
+        while total_weight > self.max_weight:
+            # Randomly select an item and set its corresponding gene to 0
+            index_to_reset = random.randint(0, len(chromosome) - 1)
+            chromosome[index_to_reset] = 0
+            total_weight = sum(item[0] * chromosome[i] for i, item in enumerate(self.items))
+        return chromosome
 
     def mutation(self,chromo, p):
     # mutated chromo intial values are zeros
@@ -102,7 +128,7 @@ class KnapsackSolverGUI:
         self.root = root
         self.root.title("Knapsack Solver")
 
-        self.font_style = ('Helvetica', 12)  # Adjust font size and style here
+        self.font_style = ('Helvetica', 12)  
 
         self.weights_label = ttk.Label(root, text="Weights(separated by , ):", font=self.font_style)
         self.weights_entry = ttk.Entry(root, font=self.font_style)
